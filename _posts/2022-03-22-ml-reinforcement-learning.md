@@ -5,7 +5,7 @@ title: "[MachineLearning] Reinforcement learning"
 toc: false
 badges: false
 comments: false
-categories: [reinforcement analysis]
+categories: [reinforcement learning]
 hide_{github,colab,binder,deepnote}_badge: true
 nb_path: _notebooks/ml-reinforcement-learning.ipynb
 layout: notebook
