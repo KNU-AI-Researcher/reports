@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MachineLearning] Dimensionality Reduction - Latent Semantic Analysis(LCA) | AIR Archive</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MachineLearning] Dimensionality Reduction - Latent Semantic Analysis(LCA)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="KNU AIR week2" />
+<meta property="og:description" content="KNU AIR week2" />
+<link rel="canonical" href="https://knu-ai-researcher.github.io/reports/dimensionality%20reduction/2022/03/22/ml-dimensionality-reduction-LCA.html" />
+<meta property="og:url" content="https://knu-ai-researcher.github.io/reports/dimensionality%20reduction/2022/03/22/ml-dimensionality-reduction-LCA.html" />
+<meta property="og:site_name" content="AIR Archive" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-22T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MachineLearning] Dimensionality Reduction - Latent Semantic Analysis(LCA)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-22T00:00:00-05:00","datePublished":"2022-03-22T00:00:00-05:00","description":"KNU AIR week2","headline":"[MachineLearning] Dimensionality Reduction - Latent Semantic Analysis(LCA)","mainEntityOfPage":{"@type":"WebPage","@id":"https://knu-ai-researcher.github.io/reports/dimensionality%20reduction/2022/03/22/ml-dimensionality-reduction-LCA.html"},"url":"https://knu-ai-researcher.github.io/reports/dimensionality%20reduction/2022/03/22/ml-dimensionality-reduction-LCA.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/reports/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://knu-ai-researcher.github.io/reports/feed.xml" title="AIR Archive" /><link rel="shortcut icon" type="image/x-icon" href="/reports/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/reports/">AIR Archive</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/reports/about/">About Me</a><a class="page-link" href="/reports/search/">Search</a><a class="page-link" href="/reports/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MachineLearning] Dimensionality Reduction - Latent Semantic Analysis(LCA)</h1><p class="page-description">KNU AIR week2</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-22T00:00:00-05:00" itemprop="datePublished">
+        Mar 22, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/reports/categories/#dimensionality reduction">dimensionality reduction</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/ml-dimensionality-reduction-LCA.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Content creators:</strong> 조동현</p>
+<p><strong>Content reviewers:</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="1.-Overview">1. Overview<a class="anchor-link" href="#1.-Overview"> </a></h1><h3 id="LCA&#46976;?">LCA&#46976;?<a class="anchor-link" href="#LCA&#46976;?"> </a></h3><ul>
+<li>Latent Semantic Analysis 의 약자로 "잠재 의미 분석"을 뜻함</li>
+</ul>
+<h3 id="LCA-&#51032;&#51032;">LCA &#51032;&#51032;<a class="anchor-link" href="#LCA-&#51032;&#51032;"> </a></h3><ul>
+<li>토픽 모델링이라는 분야에 아이디어를 제공한 알고리즘</li>
+<li>DTM이나 TF-IDF는 기본적으로 단어의 빈도 수를 이용한 수치화 방법이기 떄문에 단어의 의미를 고려하지 못한다는 단점이 존재 이를 위한 대안으로 등장함</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr />
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2.-Example">2. Example<a class="anchor-link" href="#2.-Example"> </a></h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">fetch_20newsgroups</span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">TruncatedSVD</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#45936;&#51060;&#53552;-&#47196;&#46300;-&#48143;-&#54869;&#51064;">&#45936;&#51060;&#53552; &#47196;&#46300; &#48143; &#54869;&#51064;<a class="anchor-link" href="#&#45936;&#51060;&#53552;-&#47196;&#46300;-&#48143;-&#54869;&#51064;"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">(</span><span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="s1">&#39;footers&#39;</span><span class="p">,</span> <span class="s1">&#39;quotes&#39;</span><span class="p">))</span>
+<span class="n">documents</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;샘플의 수 :&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>샘플의 수 : 11314
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">documents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#34;\n\n\n\n\n\n\nYeah, do you expect people to read the FAQ, etc. and actually accept hard\natheism?  No, you need a little leap of faith, Jimmy.  Your logic runs out\nof steam!\n\n\n\n\n\n\n\nJim,\n\nSorry I can&#39;t pity you, Jim.  And I&#39;m sorry that you have these feelings of\ndenial about the faith you need to get by.  Oh well, just pretend that it will\nall end happily ever after anyway.  Maybe if you start a new newsgroup,\nalt.atheist.hard, you won&#39;t be bummin&#39; so much?\n\n\n\n\n\n\nBye-Bye, Big Jim.  Don&#39;t forget your Flintstone&#39;s Chewables!  :) \n--\nBake Timmons, III&#34;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">target_names</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&#39;alt.atheism&#39;, &#39;comp.graphics&#39;, &#39;comp.os.ms-windows.misc&#39;, &#39;comp.sys.ibm.pc.hardware&#39;, &#39;comp.sys.mac.hardware&#39;, &#39;comp.windows.x&#39;, &#39;misc.forsale&#39;, &#39;rec.autos&#39;, &#39;rec.motorcycles&#39;, &#39;rec.sport.baseball&#39;, &#39;rec.sport.hockey&#39;, &#39;sci.crypt&#39;, &#39;sci.electronics&#39;, &#39;sci.med&#39;, &#39;sci.space&#39;, &#39;soc.religion.christian&#39;, &#39;talk.politics.guns&#39;, &#39;talk.politics.mideast&#39;, &#39;talk.politics.misc&#39;, &#39;talk.religion.misc&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#45936;&#51060;&#53552;-&#51204;&#52376;&#47532;">&#45936;&#51060;&#53552; &#51204;&#52376;&#47532;<a class="anchor-link" href="#&#45936;&#51060;&#53552;-&#51204;&#52376;&#47532;"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">news_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;document&#39;</span><span class="p">:</span><span class="n">documents</span><span class="p">})</span>
+<span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[^a-zA-Z]&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">]))</span>
+<span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;yeah expect people read actually accept hard atheism need little leap faith jimmy your logic runs steam sorry pity sorry that have these feelings denial about faith need well just pretend that will happily ever after anyway maybe start newsgroup atheist hard bummin much forget your flintstone chewables bake timmons&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#48520;&#50857;&#50612;-&#51228;&#44144;">&#48520;&#50857;&#50612; &#51228;&#44144;<a class="anchor-link" href="#&#48520;&#50857;&#50612;-&#51228;&#44144;"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">stop_words</span> <span class="o">=</span> <span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+<span class="n">tokenized_doc</span> <span class="o">=</span> <span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="c1"># 토큰화</span>
+<span class="n">tokenized_doc</span> <span class="o">=</span> <span class="n">tokenized_doc</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">tokenized_doc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&#39;yeah&#39;, &#39;expect&#39;, &#39;people&#39;, &#39;read&#39;, &#39;actually&#39;, &#39;accept&#39;, &#39;hard&#39;, &#39;atheism&#39;, &#39;need&#39;, &#39;little&#39;, &#39;leap&#39;, &#39;faith&#39;, &#39;jimmy&#39;, &#39;logic&#39;, &#39;runs&#39;, &#39;steam&#39;, &#39;sorry&#39;, &#39;pity&#39;, &#39;sorry&#39;, &#39;feelings&#39;, &#39;denial&#39;, &#39;faith&#39;, &#39;need&#39;, &#39;well&#39;, &#39;pretend&#39;, &#39;happily&#39;, &#39;ever&#39;, &#39;anyway&#39;, &#39;maybe&#39;, &#39;start&#39;, &#39;newsgroup&#39;, &#39;atheist&#39;, &#39;hard&#39;, &#39;bummin&#39;, &#39;much&#39;, &#39;forget&#39;, &#39;flintstone&#39;, &#39;chewables&#39;, &#39;bake&#39;, &#39;timmons&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="TF-IDF-&#54665;&#47148;-&#47564;&#46308;&#44592;">TF-IDF &#54665;&#47148; &#47564;&#46308;&#44592;<a class="anchor-link" href="#TF-IDF-&#54665;&#47148;-&#47564;&#46308;&#44592;"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">detokenized_doc</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">news_df</span><span class="p">)):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokenized_doc</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">detokenized_doc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detokenized_doc</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;yeah expect people read actually accept hard atheism need little leap faith jimmy logic runs steam sorry pity sorry feelings denial faith need well pretend happily ever anyway maybe start newsgroup atheist hard bummin much forget flintstone chewables bake timmons&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="n">max_df</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">smooth_idf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">news_df</span><span class="p">[</span><span class="s1">&#39;clean_doc&#39;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TF-IDF 행렬의 크기 :&#39;</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>TF-IDF 행렬의 크기 : (11314, 1000)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#53664;&#54589;-&#47784;&#45944;&#47553;">&#53664;&#54589; &#47784;&#45944;&#47553;<a class="anchor-link" href="#&#53664;&#54589;-&#47784;&#45944;&#47553;"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">svd_model</span> <span class="o">=</span> <span class="n">TruncatedSVD</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;randomized&#39;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">svd_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">svd_model</span><span class="o">.</span><span class="n">components_</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>20</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">terms</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()</span> <span class="c1"># 단어 집합. 1,000개의 단어가 저장됨.</span>
+
+<span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">topic</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Topic </span><span class="si">%d</span><span class="s2">:&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="p">[(</span><span class="n">feature_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">topic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">topic</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[:</span><span class="o">-</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">get_topics</span><span class="p">(</span><span class="n">svd_model</span><span class="o">.</span><span class="n">components_</span><span class="p">,</span><span class="n">terms</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Topic 1: [(&#39;like&#39;, 0.21386), (&#39;know&#39;, 0.20046), (&#39;people&#39;, 0.19293), (&#39;think&#39;, 0.17805), (&#39;good&#39;, 0.15128)]
+Topic 2: [(&#39;thanks&#39;, 0.32888), (&#39;windows&#39;, 0.29088), (&#39;card&#39;, 0.18069), (&#39;drive&#39;, 0.17455), (&#39;mail&#39;, 0.15111)]
+Topic 3: [(&#39;game&#39;, 0.37064), (&#39;team&#39;, 0.32443), (&#39;year&#39;, 0.28154), (&#39;games&#39;, 0.2537), (&#39;season&#39;, 0.18419)]
+Topic 4: [(&#39;drive&#39;, 0.53324), (&#39;scsi&#39;, 0.20165), (&#39;hard&#39;, 0.15628), (&#39;disk&#39;, 0.15578), (&#39;card&#39;, 0.13994)]
+Topic 5: [(&#39;windows&#39;, 0.40399), (&#39;file&#39;, 0.25436), (&#39;window&#39;, 0.18044), (&#39;files&#39;, 0.16078), (&#39;program&#39;, 0.13894)]
+Topic 6: [(&#39;chip&#39;, 0.16114), (&#39;government&#39;, 0.16009), (&#39;mail&#39;, 0.15625), (&#39;space&#39;, 0.1507), (&#39;information&#39;, 0.13562)]
+Topic 7: [(&#39;like&#39;, 0.67086), (&#39;bike&#39;, 0.14236), (&#39;chip&#39;, 0.11169), (&#39;know&#39;, 0.11139), (&#39;sounds&#39;, 0.10371)]
+Topic 8: [(&#39;card&#39;, 0.46633), (&#39;video&#39;, 0.22137), (&#39;sale&#39;, 0.21266), (&#39;monitor&#39;, 0.15463), (&#39;offer&#39;, 0.14643)]
+Topic 9: [(&#39;know&#39;, 0.46047), (&#39;card&#39;, 0.33605), (&#39;chip&#39;, 0.17558), (&#39;government&#39;, 0.1522), (&#39;video&#39;, 0.14356)]
+Topic 10: [(&#39;good&#39;, 0.42756), (&#39;know&#39;, 0.23039), (&#39;time&#39;, 0.1882), (&#39;bike&#39;, 0.11406), (&#39;jesus&#39;, 0.09027)]
+Topic 11: [(&#39;think&#39;, 0.78469), (&#39;chip&#39;, 0.10899), (&#39;good&#39;, 0.10635), (&#39;thanks&#39;, 0.09123), (&#39;clipper&#39;, 0.07946)]
+Topic 12: [(&#39;thanks&#39;, 0.36824), (&#39;good&#39;, 0.22729), (&#39;right&#39;, 0.21559), (&#39;bike&#39;, 0.21037), (&#39;problem&#39;, 0.20894)]
+Topic 13: [(&#39;good&#39;, 0.36212), (&#39;people&#39;, 0.33985), (&#39;windows&#39;, 0.28385), (&#39;know&#39;, 0.26232), (&#39;file&#39;, 0.18422)]
+Topic 14: [(&#39;space&#39;, 0.39946), (&#39;think&#39;, 0.23258), (&#39;know&#39;, 0.18074), (&#39;nasa&#39;, 0.15174), (&#39;problem&#39;, 0.12957)]
+Topic 15: [(&#39;space&#39;, 0.31613), (&#39;good&#39;, 0.3094), (&#39;card&#39;, 0.22603), (&#39;people&#39;, 0.17476), (&#39;time&#39;, 0.14496)]
+Topic 16: [(&#39;people&#39;, 0.48156), (&#39;problem&#39;, 0.19961), (&#39;window&#39;, 0.15281), (&#39;time&#39;, 0.14664), (&#39;game&#39;, 0.12871)]
+Topic 17: [(&#39;time&#39;, 0.34465), (&#39;bike&#39;, 0.27303), (&#39;right&#39;, 0.25557), (&#39;windows&#39;, 0.1997), (&#39;file&#39;, 0.19118)]
+Topic 18: [(&#39;time&#39;, 0.5973), (&#39;problem&#39;, 0.15504), (&#39;file&#39;, 0.14956), (&#39;think&#39;, 0.12847), (&#39;israel&#39;, 0.10903)]
+Topic 19: [(&#39;file&#39;, 0.44163), (&#39;need&#39;, 0.26633), (&#39;card&#39;, 0.18388), (&#39;files&#39;, 0.17453), (&#39;right&#39;, 0.15448)]
+Topic 20: [(&#39;problem&#39;, 0.33006), (&#39;file&#39;, 0.27651), (&#39;thanks&#39;, 0.23578), (&#39;used&#39;, 0.19206), (&#39;space&#39;, 0.13185)]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/reports/dimensionality%20reduction/2022/03/22/ml-dimensionality-reduction-LCA.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/reports/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/reports/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/reports/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>2022 KNU Career Explolation Result Archive</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/KNU-AI-Researcher" target="_blank" title="KNU-AI-Researcher"><svg class="svg-icon grey"><use xlink:href="/reports/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
