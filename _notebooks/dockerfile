@@ -1,0 +1,28 @@
+FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-devel
+LABEL maintainer "Yang <leibniz21c@gmail.com>"
+
+# set environment variables
+ENV WORKSPACE="/workspace" \
+    DATASET_PATH="/datasets"
+
+# set working directory
+WORKDIR /workspace
+
+# copy dependencies
+COPY requirements.txt .
+
+# Dependencies
+RUN apt update -y && \
+    apt-get install -y wget gcc libc6-dev g++ libgl1-mesa-glx libglib2.0-0 && \
+    pip3 install --upgrade pip && \
+    pip3 install -r requirements.txt && \
+    mkdir /datasets 
+#    groupadd -g 1000 yang && \
+#    useradd -r -u 1000 -g yang yang && \
+#    ./pyleargist/install_packages
+
+# User and group setting
+#USER yang
+
+ENV APP_VERSION="1.0.0" \
+    APP_NAME="pytorch-docker"
